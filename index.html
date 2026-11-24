@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seu Ano Pessoal 2027</title>
+<meta name="description" content="Descubra pela sua data de nascimento o Hábito Ralo que esvazia o seu bolso e os meses de 2027 em que ele abre.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script>
+/* =====================================================================
+   CONFIGURAÇÃO — edite só este bloco
+   ===================================================================== */
+window.FUNIL = {
+  marca: "Calendário Cofre 2027",
+  pixelMeta: "",                                   // ex.: "123456789012345" (vazio = desligado)
+  contadorPessoas: "",                             // ex.: "18.402" — deixe vazio até ter o número real
+  pedirEmail: false,                               // true = pede email antes do botão de compra
+  webhookLead: "",                                 // URL que recebe os dados do lead via POST (n8n, Make, GetResponse...)
+  checkoutUrl: "https://pay.cakto.com.br/qffauu2_1365008", // checkout do front (ou página de vendas)
+  preco: "27,00",                                  // preço exibido no resultado
+  precoDe: "",                                     // preço riscado (vazio = não mostra). Use só se for real.
+  valorPixel: 27,                                  // valor enviado no InitiateCheckout
+  backRedirectUrl: ""                              // página de recuperação ao apertar "voltar" (vazio = desligado)
+};
+</script>
+
+<style>
+/* VOICE: acolhedor, direto, de amiga que entende de dinheiro
+   IDEA: o calendário de parede na geladeira, com meses em cores de semáforo
+   PICTURE: grade de 12 meses que aparece na abertura e vira o resultado
+   COLOUR and TYPE: branco, tinta escura, verde-cofre; amarelo, vermelho e azul só como sinal; Outfit + Inter
+   LAYOUT: coluna única de celular, uma pergunta por tela, botões grandes */
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#ffffff,#0f1512);
+  --ink:light-dark(#18211d,#eef3f0);
+  --mut:light-dark(#5b6762,#a7b3ad);
+  --line:light-dark(#dfe6e2,#26322c);
+  --card:light-dark(#f4f7f5,#17201b);
+  --cofre:#0f7a5a; --cofre2:#0b5f46;
+  --verde:#1f9d63; --amarelo:#f2b632; --vermelho:#e04a3c; --azul:#2f6fdf;
+}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 "Inter",system-ui,sans-serif;overflow-x:clip}
+.wrap{max-width:480px;margin:0 auto;padding:18px 16px 44px}
+.marca{display:flex;align-items:center;gap:8px;justify-content:center;font:600 13px "Outfit",sans-serif;color:var(--cofre)}
+.marca i{width:10px;height:10px;border-radius:3px;background:var(--cofre)}
+h1{font:800 clamp(28px,7.4vw,36px)/1.08 "Outfit",sans-serif;text-align:center;margin:14px 0 10px;text-wrap:balance}
+.sub{color:var(--mut);font-size:15px;text-align:center;text-wrap:balance}
+.prog{margin:16px 0 6px;height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--cofre);border-radius:99px;transition:width .4s ease}
+.passo{font-size:13px;color:var(--mut);text-align:center}
+.tela{display:none}
+.tela.on{display:block;animation:in .3s ease}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.tela.on{animation:none}.btn{animation:none!important}}
+h2{font:700 22px/1.25 "Outfit",sans-serif;text-align:center;margin:18px 0 6px;text-wrap:balance}
+.dica{color:var(--mut);font-size:14px;text-align:center;margin-bottom:14px}
+.grid{display:grid;gap:10px}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g6{grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.op{background:var(--card);border:1.5px solid var(--line);color:var(--ink);border-radius:14px;min-height:52px;padding:14px 12px;
+  font:600 16px "Inter",sans-serif;cursor:pointer;transition:transform .12s,border-color .2s,background .2s;text-align:center}
+.op:active{transform:scale(.97)}
+.op:hover,.op.sel{border-color:var(--cofre);background:light-dark(#e8f4ef,#163026)}
+.op:focus-visible,.btn:focus-visible,input:focus-visible{outline:3px solid var(--azul);outline-offset:2px}
+.g6 .op{min-height:46px;padding:10px 0;font-size:15px}
+.lista .op{text-align:left;padding:16px 18px}
+.voltar{display:block;margin:16px auto 0;background:none;border:0;color:var(--mut);font:inherit;font-size:14px;cursor:pointer;min-height:44px}
+input{width:100%;min-height:54px;padding:14px 16px;border-radius:14px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:17px}
+.erro{color:var(--vermelho);font-size:14px;margin-top:8px;min-height:20px}
+.btn{display:block;width:100%;margin-top:14px;padding:18px;border:0;border-radius:14px;cursor:pointer;background:var(--cofre);color:#fff;
+  font:700 17px "Outfit",sans-serif;text-align:center;text-decoration:none;box-shadow:0 8px 22px rgba(15,122,90,.3);animation:pulse 2s infinite}
+.btn:hover{background:var(--cofre2)}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
+/* calendário */
+.cal{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:18px 0 6px}
+.m{border-radius:10px;padding:10px 6px 9px;text-align:center;font:600 13px "Outfit",sans-serif;color:#fff;position:relative}
+.m b{display:block;font-size:11px;font-weight:500;opacity:.9;margin-top:2px}
+.c-verde{background:var(--verde)}.c-amarelo{background:var(--amarelo);color:#3a2a00}.c-vermelho{background:var(--vermelho)}.c-azul{background:var(--azul)}
+.m.oculto{background:var(--line);color:transparent;filter:blur(1.5px)}
+.m.oculto::after{content:"";position:absolute;inset:0;margin:auto;width:12px;height:14px;border:2px solid var(--mut);border-radius:3px;top:8px;filter:none}
+.legenda{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;font-size:13px;color:var(--mut)}
+.legenda span{display:inline-flex;align-items:center;gap:6px}
+.legenda i{width:10px;height:10px;border-radius:3px}
+/* loading */
+.load{text-align:center;padding-top:36px}
+.loadcal{display:grid;grid-template-columns:repeat(4,44px);gap:6px;justify-content:center;margin-bottom:24px}
+.loadcal i{height:34px;border-radius:8px;background:var(--line);animation:pisca 1.2s infinite}
+@keyframes pisca{50%{background:var(--cofre)}}
+.msg{font:600 16px "Outfit",sans-serif;color:var(--cofre);min-height:26px}
+.barraload{height:6px;background:var(--line);border-radius:99px;margin:16px auto 0;max-width:260px;overflow:hidden}
+.barraload i{display:block;height:100%;width:0;background:var(--cofre);transition:width 5.2s linear}
+/* resultado */
+.res{text-align:center}
+.num{font:800 clamp(72px,22vw,96px)/1 "Outfit",sans-serif;color:var(--cofre);margin:6px 0}
+.ralo{font:800 clamp(26px,7vw,32px)/1.1 "Outfit",sans-serif;margin-top:6px;text-wrap:balance}
+.disf{color:var(--mut);font-size:14px;margin-top:4px}
+.carta{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-top:16px;text-align:left;font-size:15.5px}
+.carta p+p{margin-top:10px}
+.alerta{border-color:var(--vermelho);background:light-dark(#fdeeec,#2a1512)}
+.kit{list-style:none;text-align:left;margin-top:10px}
+.kit li{padding:10px 0 10px 30px;border-bottom:1px solid var(--line);position:relative;font-size:15px}
+.kit li:last-child{border-bottom:0}
+.kit li::before{content:"";position:absolute;left:4px;top:15px;width:14px;height:8px;border-left:3px solid var(--cofre);border-bottom:3px solid var(--cofre);transform:rotate(-45deg)}
+.kit b{display:block}
+.preco{margin-top:16px;font:800 30px "Outfit",sans-serif}
+.preco s{display:block;font:500 15px "Inter",sans-serif;color:var(--mut)}
+.selos{display:flex;justify-content:center;gap:6px 16px;font-size:13px;color:var(--mut);margin-top:10px;flex-wrap:wrap}
+/* página de oferta */
+.bloco{margin-top:34px;text-align:left}
+.bloco h2{margin-top:6px}
+.destaque{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px 16px 18px}
+.etiqueta{display:block;width:max-content;max-width:100%;margin:0 auto;background:var(--cofre);color:#fff;font:600 12.5px "Outfit",sans-serif;padding:5px 12px;border-radius:99px;text-align:center}
+.foto{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:16px;margin:8px 0 6px;background:var(--line)}
+.destaque .foto{background:#fff}
+.legenda-foto{text-align:center;font:600 15px "Outfit",sans-serif;color:var(--ink)}
+.pers{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:8px}
+.pers span{font-size:13px;font-weight:600;padding:5px 10px;border-radius:99px;background:light-dark(#e8f4ef,#163026);color:var(--cofre)}
+.destaque .preco{text-align:center}
+.txt{font-size:15.5px;margin-top:8px}
+.passos{list-style:none;counter-reset:p;margin-top:12px}
+.passos li{counter-increment:p;position:relative;padding:0 0 16px 46px;font-size:15px}
+.passos li::before{content:counter(p);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--cofre);color:#fff;font:700 16px/32px "Outfit",sans-serif;text-align:center}
+.passos b,.bonus b{display:block;font:700 16px "Outfit",sans-serif;margin-bottom:2px}
+.bonus{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+.bonus figure{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.bonus img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;background:#fff}
+.bonus figcaption{padding:10px 12px 12px;font-size:14px;color:var(--mut)}
+.bonus figcaption b{color:var(--ink);font-size:15px}
+.resumo{list-style:none;margin-top:8px}
+.resumo li{padding:9px 0 9px 30px;border-bottom:1px solid var(--line);position:relative;font-size:15px}
+.resumo li::before{content:"";position:absolute;left:4px;top:14px;width:14px;height:8px;border-left:3px solid var(--cofre);border-bottom:3px solid var(--cofre);transform:rotate(-45deg)}
+.resumo em{font-style:normal;font-size:12px;font-weight:600;color:#fff;background:var(--vermelho);border-radius:6px;padding:1px 6px;margin-left:6px}
+.garantia{margin-top:14px;font-size:14px;color:var(--mut);border:1.5px dashed var(--cofre);border-radius:14px;padding:12px 14px}
+.garantia b{color:var(--ink)}
+.faq details{border-bottom:1px solid var(--line);padding:4px 0}
+.faq summary{cursor:pointer;font-weight:600;min-height:44px;display:flex;align-items:center}
+.faq p{font-size:15px;color:var(--mut);padding:0 0 12px}
+.rodape{text-align:center;color:var(--mut);font-size:13px;margin-top:24px}
+.aviso{text-align:center;color:var(--mut);font-size:12px;margin-top:20px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header id="topo">
+    <div class="marca"><i></i>Calendário Cofre 2027</div>
+    <h1 id="titulo">Por onde o seu dinheiro vai escorrer em 2027?</h1>
+    <p class="sub" id="subtitulo">Pela sua data de nascimento, descubra o Hábito Ralo que esvazia o seu bolso todo ano e os meses de 2027 em que ele abre.</p>
+    <div class="cal" id="calCapa" aria-hidden="true"></div>
+    <div class="prog"><i id="barra"></i></div>
+    <div class="passo" id="passoTxt"></div>
+  </header>
+
+  <section class="tela on" data-passo="1">
+    <h2>Em que mês você nasceu?</h2>
+    <p class="dica">Leva menos de 1 minuto.</p>
+    <div class="grid g3" id="meses"></div>
+  </section>
+
+  <section class="tela" data-passo="2">
+    <h2>E em que dia?</h2>
+    <p class="dica">É com o dia e o mês que calculamos o seu Ano Pessoal 2027.</p>
+    <div class="grid g6" id="dias"></div>
+    <button class="voltar" data-voltar>‹ Voltar</button>
+  </section>
+
+  <section class="tela" data-passo="3">
+    <h2>Como o seu dinheiro terminou 2026?</h2>
+    <div class="grid lista" id="q2026"></div>
+    <button class="voltar" data-voltar>‹ Voltar</button>
+  </section>
+
+  <section class="tela" data-passo="4">
+    <h2>Quando você tenta guardar dinheiro, o que costuma acontecer?</h2>
+    <div class="grid lista" id="qguardar"></div>
+    <button class="voltar" data-voltar>‹ Voltar</button>
+  </section>
+
+  <section class="tela" data-passo="5">
+    <h2>Qual destas frases você mais fala?</h2>
+    <p class="dica">Escolha a primeira que vier à cabeça.</p>
+    <div class="grid lista" id="qfrase"></div>
+    <button class="voltar" data-voltar>‹ Voltar</button>
+  </section>
+
+  <section class="tela" data-passo="6">
+    <h2>Em que época do ano o dinheiro mais some?</h2>
+    <div class="grid lista" id="qepoca"></div>
+    <button class="voltar" data-voltar>‹ Voltar</button>
+  </section>
+
+  <section class="tela" data-passo="7">
+    <h2>Quanto você quer ter guardado em dezembro de 2027?</h2>
+    <p class="dica">Essa será a meta do seu Desafio dos Quadradinhos.</p>
+    <div class="grid lista" id="qmeta"></div>
+    <button class="voltar" data-voltar>‹ Voltar</button>
+  </section>
+
+  <section class="tela" data-passo="8">
+    <h2>Se você soubesse os meses exatos em que o seu dinheiro escorre, faria algo diferente?</h2>
+    <div class="grid lista" id="qsim"></div>
+    <button class="voltar" data-voltar>‹ Voltar</button>
+  </section>
+
+  <section class="tela" data-passo="9">
+    <h2>Para quem vamos preparar o calendário?</h2>
+    <p class="dica">Seu primeiro nome aparece no seu resultado.</p>
+    <input id="nome" type="text" placeholder="Seu primeiro nome" autocomplete="given-name" maxlength="20">
+    <div class="erro" id="erroNome"></div>
+    <button class="btn" id="btnNome" type="button">VER MEU HÁBITO RALO</button>
+    <button class="voltar" data-voltar>‹ Voltar</button>
+  </section>
+
+  <section class="tela load" data-passo="load">
+    <div class="loadcal" aria-hidden="true"><i></i><i style="animation-delay:.15s"></i><i style="animation-delay:.3s"></i><i style="animation-delay:.45s"></i><i style="animation-delay:.6s"></i><i style="animation-delay:.75s"></i><i style="animation-delay:.9s"></i><i style="animation-delay:1.05s"></i></div>
+    <div class="msg" id="loadMsg" aria-live="polite">Calculando...</div>
+    <div class="barraload"><i id="barraLoad"></i></div>
+  </section>
+
+  <section class="tela res" data-passo="res">
+    <p class="sub" id="resIntro"></p>
+    <div class="num" id="resNum"></div>
+    <p class="sub">Seu Hábito Ralo é</p>
+    <div class="ralo" id="resRalo"></div>
+    <div class="disf" id="resDisf"></div>
+
+    <div class="carta" id="resTexto"></div>
+    <div class="carta" id="resEspelho"></div>
+
+    <h2 style="margin-top:26px">Seu 2027, mês a mês</h2>
+    <div class="cal" id="calRes"></div>
+    <div class="legenda">
+      <span><i style="background:var(--verde)"></i>Agir</span>
+      <span><i style="background:var(--amarelo)"></i>Guardar</span>
+      <span><i style="background:var(--vermelho)"></i>Ralo aberto</span>
+      <span><i style="background:var(--azul)"></i>Revisar</span>
+    </div>
+    <div class="carta alerta" id="resAlerta"></div>
+
+    <!-- OFERTA -->
+    <div class="bloco destaque">
+      <span class="etiqueta">Pronto para imprimir</span>
+      <h2 id="kitTitulo"></h2>
+      <img class="foto" src="img/kit.jpg" alt="Kit Calendário Cofre 2027 com calendário, Desafio dos Quadradinhos, Guia do Seu Número, Cartão Anti-Ralo e dois bônus" loading="lazy">
+      <p class="legenda-foto">6 materiais em PDF para imprimir em casa: 4 do kit + 2 bônus</p>
+      <div class="pers" id="pers"></div>
+      <div class="preco js-preco"></div>
+      <a class="btn cta" href="#">QUERO MEU CALENDÁRIO COFRE 2027</a>
+      <div class="selos"><span>Compra segura</span><span>Garantia de 7 dias</span><span>Acesso imediato</span></div>
+    </div>
+
+    <div class="bloco">
+      <h2>Como funciona na prática</h2>
+      <img class="foto" src="img/geladeira.jpg" alt="Mulher apontando para um mês vermelho do Calendário Cofre 2027 colado na geladeira" loading="lazy">
+      <ol class="passos">
+        <li><b>Receba na hora</b>Os arquivos em PDF chegam no seu email logo depois da compra.</li>
+        <li><b>Imprima em casa ou na papelaria</b>Folhas A4 comuns. Funciona colorido ou em preto e branco.</li>
+        <li><b>Cole na geladeira e siga a cor do mês</b>Verde, age. Amarelo, guarda. Vermelho, segura. Azul, revisa.</li>
+      </ol>
+    </div>
+
+    <div class="bloco">
+      <h2>O que você recebe</h2>
+      <img class="foto" src="img/dentro.jpg" alt="Páginas impressas do kit: mês a mês, Desafio dos Quadradinhos e Guia do Seu Número" loading="lazy">
+      <ul class="kit" id="kit"></ul>
+    </div>
+
+    <div class="bloco">
+      <h2>Na hora de pagar, ele te segura</h2>
+      <img class="foto" src="img/carteira.jpg" alt="Cartão Anti-Ralo guardado na carteira na frente do cartão de crédito" loading="lazy">
+      <p class="txt" id="txtCartao"></p>
+    </div>
+
+    <div class="bloco">
+      <span class="etiqueta">Só hoje, junto com o seu kit</span>
+      <h2>2 bônus de presente</h2>
+      <div class="bonus">
+        <figure><img src="img/casal.jpg" alt="Bônus Calendário do Casal 2027" loading="lazy"><figcaption><b>Calendário do Casal 2027</b>O ralo que vocês têm juntos. 2027 é o ano das parcerias, e o dinheiro do casal também.</figcaption></figure>
+        <figure><img src="img/12dias.jpg" alt="Bônus 12 Dias de Decisão" loading="lazy"><figcaption><b>12 Dias de Decisão</b>As melhores datas do seu número para negociar, pedir aumento e vender em 2027.</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="bloco destaque" id="fechamento">
+      <h2>Tudo o que você leva hoje</h2>
+      <ul class="resumo" id="resumo"></ul>
+      <div class="preco js-preco"></div>
+      <div id="blocoEmail" style="display:none;margin-top:14px">
+        <input id="email" type="email" placeholder="Seu melhor email, para receber o kit" autocomplete="email">
+        <div class="erro" id="erroEmail"></div>
+      </div>
+      <a class="btn cta" href="#">QUERO MEU CALENDÁRIO COFRE 2027</a>
+      <div class="garantia"><b>Garantia de 7 dias.</b> Imprima, cole na geladeira e siga o primeiro mês. Se não fizer sentido para você, devolvemos 100% do valor.</div>
+    </div>
+
+    <div class="bloco faq">
+      <h2>Dúvidas comuns</h2>
+      <details><summary>Preciso de impressora colorida?</summary><p>Não. As cores ajudam, mas cada mês também tem o nome e um ícone, então funciona em preto e branco. Também dá para imprimir em qualquer papelaria.</p></details>
+      <details><summary>E se eu não acreditar em numerologia?</summary><p>O seu número aponta o hábito e os meses de atenção. As regras de cada mês são hábitos práticos de organização, que funcionam por si.</p></details>
+      <details><summary>Como eu recebo?</summary><p>Logo depois do pagamento você recebe por email o kit do seu Ano Pessoal, em PDF, pronto para imprimir.</p></details>
+      <details><summary>Serve para 2027 inteiro?</summary><p>Sim. O calendário vai de janeiro a dezembro de 2027. Quanto antes você colar, mais meses aproveita.</p></details>
+    </div>
+
+    <p class="aviso">Conteúdo de autoconhecimento e organização pessoal. Não é aconselhamento financeiro e não garante resultados. Imagens ilustrativas do material.</p>
+  </section>
+
+  <div class="rodape" id="rodape">Suas respostas são confidenciais.<span id="contadorTxt"></span></div>
+</div>
+
+<script>
+{
+const C = window.FUNIL;
+const $ = s => document.querySelector(s);
+const st = {passo:1};
+const TOTAL = 9;
+
+/* ---------- utm ---------- */
+const params = new URLSearchParams(location.search);
+const utm = {};
+params.forEach((v,k)=>{ if(/^(utm_|fbclid|src|sck|xcod)/.test(k)) utm[k]=v; });
+
+/* ---------- pixel ---------- */
+if (C.pixelMeta) {
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', C.pixelMeta); fbq('track','PageView');
+}
+function track(ev, data, padrao){
+  try{ if(window.fbq) padrao ? fbq('track',ev,data||{}) : fbq('trackCustom',ev,data||{}); }catch(e){}
+  try{ if(window.gtag) gtag('event',ev,data||{}); }catch(e){}
+}
+
+/* ---------- dados ---------- */
+const MESES = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+const MCURTO = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
+
+const RALOS = {
+  1:{nome:"O Recomeço Caro", disf:"iniciativa",
+     txt:"Você é de começar. Tem energia para o novo, e isso é raro. O problema é que todo recomeço vem com uma compra: o curso, o kit, a matrícula. Em 2027, que para você é um ano de começos, esse ralo fica mais aberto do que nunca."},
+  2:{nome:"O Sim que Custa", disf:"gentileza",
+     txt:"Você é a pessoa a quem ninguém precisa pedir duas vezes. Empresta, divide, cobre a parte de alguém. Só que cada \"sim\" sai do seu bolso. E em 2027, o ano das parcerias, os pedidos vão chegar em dobro."},
+  3:{nome:"A Vitrine", disf:"alegria e presença",
+     txt:"Você é quem anima o grupo, lembra dos aniversários e não deixa ninguém sem presente. Essa alegria tem um preço: pequenos gastos para estar presente que, somados, viram o dinheiro que nunca sobra."},
+  4:{nome:"O Aperto que Estoura", disf:"disciplina",
+     txt:"Você sabe apertar o cinto como ninguém. Mas aperta tanto que, em poucos meses, estoura tudo de uma vez. O seu ralo não é gastar. É economizar de um jeito que não se sustenta."},
+  5:{nome:"O Impulso de Sexta", disf:"liberdade",
+     txt:"Você valoriza a liberdade e vive o momento. O ralo aparece nas pequenas decisões de impulso: a compra \"já que estou aqui\", o delivery da sexta, o app aberto antes de dormir."},
+  6:{nome:"O Colo da Família", disf:"amor e responsabilidade",
+     txt:"Você cuida de todo mundo. É o colo da família, quem resolve, quem ajuda. Só que ajuda sem limite vira ralo, e você termina o mês sem nada guardado para você."},
+  7:{nome:"A Gaveta", disf:"calma",
+     txt:"Você prefere não se estressar com dinheiro. Deixa o extrato para depois e o boleto para amanhã. O ralo vive justamente no que não é olhado: juros, tarifas e assinaturas esquecidas."},
+  8:{nome:"A Parcela Bonita", disf:"ambição",
+     txt:"Você tem ambição e quer conquistar. O ralo vem disfarçado de \"cabe no mês\": uma parcela aqui, outra ali, até o salário chegar comprometido antes mesmo de cair na conta."},
+  9:{nome:"O Ralo da Compensação", disf:"autocuidado",
+     txt:"Você aguenta muita coisa calada. Quando o dia pesa, um gasto parece um carinho merecido. Esse é o seu ralo: o dinheiro que sai para compensar o que doeu."}
+};
+
+const Q2026 = [["sobrou","Sobrou um pouco"],["zerou","Zerou, como sempre"],["vermelho","Fiquei no vermelho"],["naoolho","Prefiro nem olhar"]];
+const QGUARDAR = [["imprevisto","Aparece um imprevisto"],["ajuda","Alguém precisa de ajuda"],["presente","Eu acabo me dando um presente"],["desisto","Desisto em poucas semanas"]];
+const QFRASE = [
+  ["pago","\"Pode deixar que eu pago\"",[2,6]],
+  ["cabe","\"Cabe no mês\"",[8]],
+  ["mereco","\"Hoje eu mereço\"",[3,5,9]],
+  ["depois","\"Depois eu vejo isso\"",[7]],
+  ["agora","\"Agora vai, vou começar\"",[1,4]]
+];
+const QEPOCA = [["inicio","No começo do ano"],["meio","No meio do ano"],["fim","No fim do ano"],["todo","O ano todo"]];
+const QMETA = [["2000","R$ 2 mil"],["5000","R$ 5 mil"],["10000","R$ 10 mil"],["20000","R$ 20 mil"]];
+const QSIM = [["sim","Sim, com certeza"],["talvez","Talvez"]];
+
+/* ---------- cálculo ---------- */
+const reduz = n => { while(n>9){ n=String(n).split('').reduce((a,b)=>a+ +b,0); } return n; };
+const somaDig = n => String(n).split('').reduce((a,b)=>a+ +b,0);
+const anoPessoal = (d,m) => reduz(somaDig(d)+somaDig(m)+2+0+2+7);
+const corMes = pm => [1,8].includes(pm)?'verde':[2,4,6].includes(pm)?'amarelo':[3,5,9].includes(pm)?'vermelho':'azul';
+const calendario = ap => MCURTO.map((_,i)=>corMes(reduz(ap+i+1)));
+const fmtMeta = v => 'R$ '+Number(v).toLocaleString('pt-BR');
+
+/* ---------- capa: calendário ilustrativo ---------- */
+$('#calCapa').innerHTML = calendario(6).map((c,i)=>`<div class="m c-${c}">${MCURTO[i]}</div>`).join('');
+
+/* ---------- navegação ---------- */
+const historico = [];
+function ir(passo, voltando){
+  if(!voltando) historico.push(st.passo);
+  st.passo = passo;
+  document.querySelectorAll('.tela').forEach(t=>t.classList.toggle('on', String(t.dataset.passo)===String(passo)));
+  const quiz = typeof passo==='number';
+  const pct = quiz ? Math.min(100, Math.round(100*(1-Math.pow(1-(passo-1)/TOTAL,1.6)))+6) : 100;
+  $('#barra').style.width = pct+'%';
+  $('#passoTxt').textContent = quiz ? `Passo ${passo} de ${TOTAL}` : '';
+  const capa = quiz && passo===1;
+  $('#titulo').style.display = capa ? '' : 'none';
+  $('#subtitulo').style.display = capa ? '' : 'none';
+  $('#calCapa').style.display = capa ? '' : 'none';
+  $('#topo .prog').style.display = quiz ? '' : 'none';
+  $('#rodape').style.display = quiz ? '' : 'none';
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(quiz) track('QuizPasso',{passo});
+}
+document.querySelectorAll('[data-voltar]').forEach(b=>b.onclick=()=>{ const p=historico.pop(); if(p) ir(p,true); });
+
+function botoes(alvo, itens, fn){
+  const el = $(alvo); el.innerHTML='';
+  itens.forEach(it=>{
+    const b=document.createElement('button'); b.className='op'; b.type='button';
+    b.textContent = it.t;
+    b.onclick=()=>{ el.querySelectorAll('.op').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); setTimeout(()=>fn(it.v),180); };
+    el.appendChild(b);
+  });
+}
+
+/* passo 1 e 2: mês e dia */
+botoes('#meses', MESES.map((m,i)=>({v:i+1,t:m})), m=>{ st.mes=m; montarDias(m); ir(2); });
+function montarDias(m){
+  const fim = new Date(2000,m,0).getDate(); // 2000 é bissexto: fevereiro com 29
+  botoes('#dias', Array.from({length:fim},(_,i)=>({v:i+1,t:String(i+1)})), d=>{ st.dia=d; ir(3); });
+}
+
+/* passos 3 a 8 */
+const lista = arr => arr.map(x=>({v:x[0],t:x[1]}));
+botoes('#q2026', lista(Q2026), v=>{ st.fim2026=v; ir(4); });
+botoes('#qguardar', lista(QGUARDAR), v=>{ st.guardar=v; ir(5); });
+botoes('#qfrase', lista(QFRASE), v=>{ st.frase=v; ir(6); });
+botoes('#qepoca', lista(QEPOCA), v=>{ st.epoca=v; ir(7); });
+botoes('#qmeta', lista(QMETA), v=>{ st.meta=v; ir(8); });
+botoes('#qsim', lista(QSIM), v=>{ st.sim=v; ir(9); });
+
+/* passo 9: nome */
+$('#nome').addEventListener('keydown',e=>{ if(e.key==='Enter') $('#btnNome').click(); });
+$('#btnNome').onclick=()=>{
+  let n=$('#nome').value.trim();
+  if(!n){ $('#erroNome').textContent='Digite seu primeiro nome.'; return; }
+  if(/[0-9]/.test(n)){ $('#erroNome').textContent='Use apenas letras.'; return; }
+  n=n.split(/\s+/)[0]; n=n.charAt(0).toUpperCase()+n.slice(1).toLowerCase();
+  st.nome=n; $('#erroNome').textContent='';
+  st.ap=anoPessoal(st.dia,st.mes);
+  track('QuizConcluido',{ano_pessoal:st.ap,meta:st.meta});
+  carregar();
+};
+
+/* ---------- loading ---------- */
+function carregar(){
+  ir('load');
+  const msgs=[`Calculando o Ano Pessoal de ${st.dia} de ${MESES[st.mes-1]}...`,
+              'Cruzando com o Ano Universal 2 de 2027...',
+              `Identificando o Hábito Ralo de ${st.nome}...`,
+              'Marcando os seus meses de risco...'];
+  let i=0; $('#loadMsg').textContent=msgs[0];
+  requestAnimationFrame(()=>{ $('#barraLoad').style.width='100%'; });
+  const t=setInterval(()=>{ i++; if(i<msgs.length) $('#loadMsg').textContent=msgs[i]; else { clearInterval(t); revelar(); } },1300);
+}
+
+/* ---------- resultado ---------- */
+function revelar(){
+  const r = RALOS[st.ap];
+  const cal = calendario(st.ap);
+  const vermelhos = cal.map((c,i)=>c==='vermelho'?i:-1).filter(i=>i>=0);
+  const primeiro = vermelhos[0];
+  const frase = QFRASE.find(f=>f[0]===st.frase);
+
+  $('#resIntro').textContent = `${st.nome}, o seu Ano Pessoal 2027 é o`;
+  $('#resNum').textContent = st.ap;
+  $('#resRalo').textContent = r.nome;
+  $('#resDisf').textContent = `disfarçado de ${r.disf}`;
+  $('#resTexto').innerHTML = `<p></p><p><b>Você não é descontrolada.</b> Você só usa a sua melhor qualidade no mês errado.</p>`;
+  $('#resTexto p').textContent = r.txt;
+
+  const bate = frase[2].includes(st.ap);
+  const esp = $('#resEspelho'); esp.innerHTML='<p></p>';
+  esp.querySelector('p').textContent = bate
+    ? `Você marcou ${frase[1]} como a frase que mais fala. Não é coincidência: é a frase típica de quem tem ${r.nome} como ralo.`
+    : `Você marcou ${frase[1]} como a frase que mais fala. Repare: por trás dela está o mesmo padrão do seu ralo, ${r.nome}.`;
+
+  $('#calRes').innerHTML = cal.map((c,i)=> i===primeiro
+    ? `<div class="m c-${c}">${MCURTO[i]}<b>ralo aberto</b></div>`
+    : `<div class="m oculto" aria-label="${MESES[i]} bloqueado">${MCURTO[i]}<b>.</b></div>`).join('');
+
+  $('#resAlerta').innerHTML = '<p></p><p></p>';
+  const al = $('#resAlerta').querySelectorAll('p');
+  al[0].innerHTML = `<b>Atenção:</b> o seu ralo abre em <b>${vermelhos.length} meses</b> de 2027. O primeiro é <b>${MESES[primeiro]}</b>.`;
+  al[1].textContent = 'Os outros meses, e o que fazer em cada um deles, estão no seu Calendário Cofre 2027.';
+
+  $('#kitTitulo').textContent = `${st.nome}, o seu Calendário Cofre 2027 já está pronto`;
+  const kit = [
+    ['Calendário Cofre 2027 do Ano Pessoal '+st.ap, 'Os 12 meses nas cores do semáforo e uma regra de uma linha por mês. Em A4 e A3, para a geladeira.'],
+    ['Cartão Anti-Ralo', `A frase-trava do seu ralo (${r.nome}), do tamanho de um cartão, para ficar na carteira.`],
+    ['Desafio dos Quadradinhos', `A sua grade para chegar a ${fmtMeta(st.meta)} até dezembro de 2027. Pinte um quadrado a cada valor guardado.`],
+    ['Guia do Seu Número', 'O seu Ano Pessoal explicado, os 12 meses e as 3 decisões certas do seu ano.']
+  ];
+  $('#kit').innerHTML = kit.map(()=>'<li><b></b><span></span></li>').join('');
+  $('#kit').querySelectorAll('li').forEach((li,i)=>{ li.querySelector('b').textContent=kit[i][0]; li.querySelector('span').textContent=kit[i][1]; });
+
+  const chips = [`Ano Pessoal ${st.ap}`, r.nome, `Meta de ${fmtMeta(st.meta)}`];
+  $('#pers').innerHTML = chips.map(()=>'<span></span>').join('');
+  $('#pers').querySelectorAll('span').forEach((s,i)=>s.textContent=chips[i]);
+
+  $('#txtCartao').textContent = `O seu Cartão Anti-Ralo traz a frase-trava do seu ralo, ${r.nome}: uma linha para ler antes de pagar. Ele fica na carteira, na frente do cartão de crédito, exatamente onde o seu ralo costuma abrir.`;
+
+  const resumo = [
+    [`Calendário Cofre 2027 do Ano Pessoal ${st.ap}`,''],
+    ['Cartão Anti-Ralo',''],
+    [`Desafio dos Quadradinhos (meta de ${fmtMeta(st.meta)})`,''],
+    ['Guia do Seu Número',''],
+    ['Calendário do Casal 2027','bônus'],
+    ['12 Dias de Decisão','bônus']
+  ];
+  $('#resumo').innerHTML = resumo.map(()=>'<li><span></span></li>').join('');
+  $('#resumo').querySelectorAll('li').forEach((li,i)=>{
+    li.querySelector('span').textContent = resumo[i][0];
+    if(resumo[i][1]){ const e=document.createElement('em'); e.textContent=resumo[i][1]; li.appendChild(e); }
+  });
+
+  document.querySelectorAll('.js-preco').forEach(p=>p.innerHTML = (C.precoDe?`<s>de R$ ${C.precoDe}</s>`:'') + `R$ ${C.preco}`);
+  if(C.pedirEmail) $('#blocoEmail').style.display='block';
+  document.querySelectorAll('.cta').forEach(a=>a.href = linkCheckout());
+
+  ir('res');
+  track('RaloRevelado',{ano_pessoal:st.ap,ralo:r.nome});
+}
+
+/* ---------- checkout ---------- */
+function linkCheckout(){
+  const u=new URL(C.checkoutUrl, location.href);
+  Object.entries(utm).forEach(([k,v])=>u.searchParams.set(k,v));
+  u.searchParams.set('name',st.nome);
+  if(st.email) u.searchParams.set('email',st.email);
+  u.searchParams.set('ap',st.ap);
+  u.searchParams.set('meta',st.meta);
+  u.searchParams.set('src',`quiz_ap${st.ap}_${st.frase}_${st.meta}`);
+  return u.toString();
+}
+document.querySelectorAll('.cta').forEach(a=>a.onclick = e=>{
+  if(C.pedirEmail){
+    const em=$('#email').value.trim();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){
+      e.preventDefault(); $('#erroEmail').textContent='Digite o seu email para receber o kit.';
+      $('#blocoEmail').scrollIntoView({behavior:'smooth',block:'center'}); $('#email').focus(); return;
+    }
+    st.email=em; $('#erroEmail').textContent='';
+    track('Lead',{content_name:'quiz_ano_pessoal'},true);
+  }
+  if(C.webhookLead){
+    try{ fetch(C.webhookLead,{method:'POST',headers:{'Content-Type':'application/json'},keepalive:true,
+      body:JSON.stringify({nome:st.nome,email:st.email||'',dia:st.dia,mes:st.mes,ano_pessoal:st.ap,ralo:RALOS[st.ap].nome,
+        fim2026:st.fim2026,guardar:st.guardar,frase:st.frase,epoca:st.epoca,meta:st.meta,...utm})}).catch(()=>{}); }catch(err){}
+  }
+  track('InitiateCheckout',{content_name:'calendario_cofre_2027',value:C.valorPixel,currency:'BRL'},true);
+  a.href = linkCheckout();
+});
+
+/* ---------- back redirect ---------- */
+if(C.backRedirectUrl){
+  history.pushState(null,'',location.href);
+  addEventListener('popstate',()=>{
+    const u=new URL(C.backRedirectUrl, location.href);
+    Object.entries(utm).forEach(([k,v])=>u.searchParams.set(k,v));
+    if(st.nome) u.searchParams.set('name',st.nome);
+    location.href=u.toString();
+  });
+}
+
+if(C.contadorPessoas) $('#contadorTxt').textContent = ` Mais de ${C.contadorPessoas} pessoas já descobriram o seu Hábito Ralo.`;
+ir(1,true);
+}
+</script>
+</body>
+</html>
