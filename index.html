@@ -143,6 +143,32 @@ input{width:100%;min-height:54px;padding:14px 16px;border-radius:14px;border:1.5
 .faq p{font-size:15px;color:var(--mut);padding:0 0 12px}
 .rodape{text-align:center;color:var(--mut);font-size:13px;margin-top:24px}
 .aviso{text-align:center;color:var(--mut);font-size:12px;margin-top:20px;line-height:1.5}
+/* v2: capa enxuta + mockup por dentro */
+#calCapa{grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;margin:12px 0 4px}
+#calCapa .m{padding:6px 2px;font-size:11px;border-radius:7px}
+.cta-cal{margin-top:12px}
+.folha{background:#fff;color:#18211d;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.14);padding:14px 12px 12px;margin-top:14px;text-align:left;border:1px solid #dfe6e2}
+.folha .fh{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+.folha .fn{flex:0 0 46px;height:46px;border-radius:10px;background:var(--cofre);color:#fff;font:800 26px/46px "Outfit",sans-serif;text-align:center}
+.folha .fk{font:700 9.5px "Outfit",sans-serif;letter-spacing:.12em;color:var(--cofre)}
+.folha .ft{font:800 19px/1.1 "Outfit",sans-serif}
+.folha .fa{background:#fdeceb;border:1px solid var(--vermelho);color:#7a1f16;border-radius:8px;padding:7px 9px;font-size:12.5px;margin-bottom:8px}
+.folha .fa i{display:inline-block;width:28px;height:10px;background:#e7b3ad;border-radius:3px;vertical-align:middle;margin:0 2px}
+.fg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.ft2{border-radius:8px;padding:7px 7px 6px;min-height:86px;color:#fff;font-size:10.5px;line-height:1.3;position:relative}
+.ft2 b{display:block;font:800 13px "Outfit",sans-serif;margin-bottom:2px}
+.ft2 em{display:inline-block;font-style:normal;font:800 8px "Outfit",sans-serif;letter-spacing:.05em;background:rgba(255,255,255,.25);padding:1px 5px;border-radius:3px;margin-bottom:3px}
+.ft2.c-amarelo em{background:rgba(58,42,0,.12)}
+.ft2.tranca{background:#e9eeeb;color:#5b6762}
+.ft2.tranca span{display:block;filter:blur(3.5px);user-select:none}
+.ft2.tranca::after{content:"🔒";position:absolute;right:7px;top:6px;font-size:12px}
+.folha .fc{margin-top:9px;background:var(--cofre);color:#fff;border-radius:8px;padding:8px 10px;font:700 12.5px "Outfit",sans-serif}
+.folha .fc span{filter:blur(4px)}
+.spoiler{list-style:none;margin-top:14px}
+.spoiler li{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 13px 11px 44px;margin-bottom:8px;font-size:15px;position:relative}
+.spoiler li::before{content:attr(data-i);position:absolute;left:12px;top:10px;font-size:19px}
+.spoiler b{color:var(--ink)}
+.ex-foto{font-size:12.5px;color:var(--mut);text-align:center;margin-top:-2px}
 </style>
 </head>
 <body>
@@ -152,7 +178,7 @@ input{width:100%;min-height:54px;padding:14px 16px;border-radius:14px;border:1.5
   <header id="topo">
     <div class="marca"><i></i>Calendário Cofre 2027</div>
     <h1 id="titulo">Por onde o seu dinheiro vai escorrer em 2027?</h1>
-    <p class="sub" id="subtitulo">Pela sua data de nascimento, descubra o Hábito Ralo que esvazia o seu bolso todo ano e os meses de 2027 em que ele abre.</p>
+    <p class="sub" id="subtitulo">Pela sua data de nascimento, descubra o hábito que esvazia o seu bolso e os meses de 2027 em que ele volta.</p>
     <div class="cal" id="calCapa" aria-hidden="true"></div>
     <div class="prog"><i id="barra"></i></div>
     <div class="passo" id="passoTxt"></div>
@@ -198,7 +224,7 @@ input{width:100%;min-height:54px;padding:14px 16px;border-radius:14px;border:1.5
 
   <section class="tela" data-passo="7">
     <h2>Quanto você quer ter guardado em dezembro de 2027?</h2>
-    <p class="dica">Essa será a meta do seu Desafio dos Quadradinhos.</p>
+    <p class="dica">No seu calendário, cada mês tem um espaço para anotar quanto você guardou.</p>
     <div class="grid lista" id="qmeta"></div>
     <button class="voltar" data-voltar>‹ Voltar</button>
   </section>
@@ -243,13 +269,24 @@ input{width:100%;min-height:54px;padding:14px 16px;border-radius:14px;border:1.5
       <span><i style="background:var(--azul)"></i>Revisar</span>
     </div>
     <div class="carta alerta" id="resAlerta"></div>
+    <a class="btn cta cta-cal" href="#">VER MEUS OUTROS MESES VERMELHOS</a>
+    <div class="selos"><span>R$ <span class="js-preco-num"></span></span><span>PDF para imprimir</span><span>Garantia de 7 dias</span></div>
+
+    <!-- POR DENTRO -->
+    <div class="bloco">
+      <span class="etiqueta">Por dentro do seu calendário</span>
+      <h2 id="dentroTitulo"></h2>
+      <div class="folha" id="folha" aria-label="Prévia da sua página do Calendário Cofre 2027"></div>
+      <ul class="spoiler" id="spoiler"></ul>
+    </div>
 
     <!-- OFERTA -->
     <div class="bloco destaque">
       <span class="etiqueta">Pronto para imprimir</span>
       <h2 id="kitTitulo"></h2>
-      <img class="foto" src="img/kit.jpg" alt="Kit Calendário Cofre 2027 com calendário, Desafio dos Quadradinhos, Guia do Seu Número, Cartão Anti-Ralo e dois bônus" loading="lazy">
-      <p class="legenda-foto">6 materiais em PDF para imprimir em casa: 4 do kit + 2 bônus</p>
+      <img class="foto" id="fotoMapa" src="img/mapa.jpg" alt="Capa e página do Calendário Cofre 2027 com os 12 meses coloridos e o Cartão Anti-Ralo" loading="lazy">
+      <p class="legenda-foto">PDF para imprimir em A4. Chega no seu email na hora.</p>
+      <p class="ex-foto" id="exFoto">Na foto, a página do Ano Pessoal 6. A sua vem com o seu número.</p>
       <div class="pers" id="pers"></div>
       <div class="preco js-preco"></div>
       <a class="btn cta" href="#">QUERO MEU CALENDÁRIO COFRE 2027</a>
@@ -268,7 +305,6 @@ input{width:100%;min-height:54px;padding:14px 16px;border-radius:14px;border:1.5
 
     <div class="bloco">
       <h2>O que você recebe</h2>
-      <img class="foto" src="img/dentro.jpg" alt="Páginas impressas do kit: mês a mês, Desafio dos Quadradinhos e Guia do Seu Número" loading="lazy">
       <ul class="kit" id="kit"></ul>
     </div>
 
@@ -276,15 +312,6 @@ input{width:100%;min-height:54px;padding:14px 16px;border-radius:14px;border:1.5
       <h2>Na hora de pagar, ele te segura</h2>
       <img class="foto" src="img/carteira.jpg" alt="Cartão Anti-Ralo guardado na carteira na frente do cartão de crédito" loading="lazy">
       <p class="txt" id="txtCartao"></p>
-    </div>
-
-    <div class="bloco">
-      <span class="etiqueta">Só hoje, junto com o seu kit</span>
-      <h2>2 bônus de presente</h2>
-      <div class="bonus">
-        <figure><img src="img/casal.jpg" alt="Bônus Calendário do Casal 2027" loading="lazy"><figcaption><b>Calendário do Casal 2027</b>O ralo que vocês têm juntos. 2027 é o ano das parcerias, e o dinheiro do casal também.</figcaption></figure>
-        <figure><img src="img/12dias.jpg" alt="Bônus 12 Dias de Decisão" loading="lazy"><figcaption><b>12 Dias de Decisão</b>As melhores datas do seu número para negociar, pedir aumento e vender em 2027.</figcaption></figure>
-      </div>
     </div>
 
     <div class="bloco destaque" id="fechamento">
@@ -301,9 +328,10 @@ input{width:100%;min-height:54px;padding:14px 16px;border-radius:14px;border:1.5
 
     <div class="bloco faq">
       <h2>Dúvidas comuns</h2>
-      <details><summary>Preciso de impressora colorida?</summary><p>Não. As cores ajudam, mas cada mês também tem o nome e um ícone, então funciona em preto e branco. Também dá para imprimir em qualquer papelaria.</p></details>
+      <details><summary>Preciso de impressora colorida?</summary><p>Não. As cores ajudam, mas cada mês também traz escrito o que fazer (agir, guardar, ralo aberto ou revisar), então funciona em preto e branco. Também dá para imprimir em qualquer papelaria.</p></details>
       <details><summary>E se eu não acreditar em numerologia?</summary><p>O seu número aponta o hábito e os meses de atenção. As regras de cada mês são hábitos práticos de organização, que funcionam por si.</p></details>
-      <details><summary>Como eu recebo?</summary><p>Logo depois do pagamento você recebe por email o kit do seu Ano Pessoal, em PDF, pronto para imprimir.</p></details>
+      <details><summary>Como eu recebo?</summary><p>Logo depois do pagamento você recebe por email o PDF do Calendário Cofre 2027, pronto para imprimir. Ele traz a página de cada um dos 9 números, então dá para fazer o de quem você quiser.</p></details>
+      <details><summary>É o mesmo calendário para todo mundo?</summary><p>Não. Cada número tem os seus meses vermelhos, verdes, amarelos e azuis, e a trava do seu ralo. Você imprime só a página do seu número.</p></details>
       <details><summary>Serve para 2027 inteiro?</summary><p>Sim. O calendário vai de janeiro a dezembro de 2027. Quanto antes você colar, mais meses aproveita.</p></details>
     </div>
 
@@ -418,7 +446,7 @@ function botoes(alvo, itens, fn){
 }
 
 /* passo 1 e 2: mês e dia */
-botoes('#meses', MESES.map((m,i)=>({v:i+1,t:m})), m=>{ st.mes=m; montarDias(m); ir(2); });
+botoes('#meses', MESES.map((m,i)=>({v:i+1,t:m})), m=>{ st.mes=m; if(!st.iniciou){ st.iniciou=1; track('QuizIniciado',{}); } montarDias(m); ir(2); });
 function montarDias(m){
   const fim = new Date(2000,m,0).getDate(); // 2000 é bissexto: fevereiro com 29
   botoes('#dias', Array.from({length:fim},(_,i)=>({v:i+1,t:String(i+1)})), d=>{ st.dia=d; ir(3); });
@@ -488,15 +516,41 @@ function revelar(){
   al[0].innerHTML = `<b>Atenção:</b> o seu ralo abre em <b>${vermelhos.length} meses</b> de 2027. O primeiro é <b>${MESES[primeiro]}</b>.`;
   al[1].textContent = 'Os outros meses, e o que fazer em cada um deles, estão no seu Calendário Cofre 2027.';
 
+  if(st.ap===6){ $('#fotoMapa').src='img/mapa-1.jpg'; $('#exFoto').textContent='Na foto, a página do Ano Pessoal 1. A sua vem com o seu número.'; }
   $('#kitTitulo').textContent = `${st.nome}, o seu Calendário Cofre 2027 já está pronto`;
   const kit = [
-    ['Calendário Cofre 2027 do Ano Pessoal '+st.ap, 'Os 12 meses nas cores do semáforo e uma regra de uma linha por mês. Em A4 e A3, para a geladeira.'],
-    ['Cartão Anti-Ralo', `A frase-trava do seu ralo (${r.nome}), do tamanho de um cartão, para ficar na carteira.`],
-    ['Desafio dos Quadradinhos', `A sua grade para chegar a ${fmtMeta(st.meta)} até dezembro de 2027. Pinte um quadrado a cada valor guardado.`],
-    ['Guia do Seu Número', 'O seu Ano Pessoal explicado, os 12 meses e as 3 decisões certas do seu ano.']
+    [`Seu 2027 mês a mês, no Ano Pessoal ${st.ap}`, 'Os 12 meses nas cores do semáforo, com o que fazer em cada um e um espaço para anotar quanto você guardou.'],
+    [`A trava dos seus ${vermelhos.length} meses vermelhos`, `O que fazer exatamente nos meses em que ${r.nome} abre.`],
+    ['Cartão Anti-Ralo', `A frase-trava de ${r.nome}, do tamanho de um cartão, para recortar e levar na carteira.`],
+    ['Os 9 números no mesmo PDF', 'Dá para imprimir também o calendário do marido, da mãe ou dos filhos.']
   ];
   $('#kit').innerHTML = kit.map(()=>'<li><b></b><span></span></li>').join('');
   $('#kit').querySelectorAll('li').forEach((li,i)=>{ li.querySelector('b').textContent=kit[i][0]; li.querySelector('span').textContent=kit[i][1]; });
+
+  /* mockup "por dentro" */
+  const ROT={verde:'AGIR',amarelo:'GUARDAR',vermelho:'RALO ABERTO',azul:'REVISAR'};
+  const REGRA={verde:'Bom para a compra planejada, negociar uma dívida ou começar algo.',amarelo:'Separe o valor do cofre no dia do pagamento, antes de tudo.',azul:'Abra o extrato, veja assinaturas e parcelas e corte uma coisa.',vermelho:'A trava do seu ralo para este mês.'};
+  const verdes = cal.map((c,i)=>c==='verde'?i:-1).filter(i=>i>=0);
+  const azuis = cal.map((c,i)=>c==='azul'?i:-1).filter(i=>i>=0);
+  const aberto = new Set([primeiro, verdes[0]]);
+  $('#dentroTitulo').textContent = `${st.nome}, esta é a sua página`;
+  const tiles = cal.map((c,i)=> aberto.has(i)
+    ? `<div class="ft2 c-${c}"><b>${MESES[i]}</b><em>${ROT[c]}</em><div>${c==='vermelho'?'Trava do seu ralo: no calendário.':REGRA[c]}</div></div>`
+    : `<div class="ft2 tranca"><b>${MESES[i]}</b><span>Cor e regra do mês liberadas no seu calendário.</span></div>`).join('');
+  $('#folha').innerHTML = `<div class="fh"><div class="fn">${st.ap}</div><div><div class="fk">CALENDÁRIO COFRE 2027 · ANO PESSOAL ${st.ap}</div><div class="ft"></div></div></div>
+    <div class="fa">O seu ralo abre em <b>${vermelhos.length} meses</b>: ${MCURTO[primeiro]}${vermelhos.slice(1).map(()=>'<i></i>').join('')}</div>
+    <div class="fg">${tiles}</div>
+    <div class="fc">Cartão Anti-Ralo: “<span>frase-trava do seu ralo</span>”</div>`;
+  $('#folha .ft').textContent = r.nome;
+
+  const outrosV = vermelhos.length-1;
+  const sp = [
+    ['🔴', `<b>Mais ${outrosV} ${outrosV===1?'mês':'meses'} de ralo aberto</b> além de ${MESES[primeiro]}. No calendário você vê quais são e a trava para cada um.`],
+    ['🟢', `<b>${MESES[verdes[0]]} é o seu primeiro mês verde.</b> Você tem ${verdes.length} no ano: os melhores para a compra planejada ou para negociar uma dívida.`],
+    azuis.length ? ['🔵', `<b>${azuis.length===1?'Um único mês azul':azuis.length+' meses azuis'}</b>: a hora de parar e revisar extrato, assinaturas e parcelas antes que virem bola de neve.`] : null,
+    ['✂️', `<b>A frase-trava de ${r.nome}</b> para recortar e ler antes de passar o cartão.`]
+  ].filter(Boolean);
+  $('#spoiler').innerHTML = sp.map(x=>`<li data-i="${x[0]}">${x[1]}</li>`).join('');
 
   const chips = [`Ano Pessoal ${st.ap}`, r.nome, `Meta de ${fmtMeta(st.meta)}`];
   $('#pers').innerHTML = chips.map(()=>'<span></span>').join('');
@@ -506,11 +560,9 @@ function revelar(){
 
   const resumo = [
     [`Calendário Cofre 2027 do Ano Pessoal ${st.ap}`,''],
-    ['Cartão Anti-Ralo',''],
-    [`Desafio dos Quadradinhos (meta de ${fmtMeta(st.meta)})`,''],
-    ['Guia do Seu Número',''],
-    ['Calendário do Casal 2027','bônus'],
-    ['12 Dias de Decisão','bônus']
+    [`A trava dos seus ${vermelhos.length} meses vermelhos`,''],
+    ['Cartão Anti-Ralo para recortar',''],
+    ['Os 9 números no mesmo PDF','extra']
   ];
   $('#resumo').innerHTML = resumo.map(()=>'<li><span></span></li>').join('');
   $('#resumo').querySelectorAll('li').forEach((li,i)=>{
@@ -519,11 +571,13 @@ function revelar(){
   });
 
   document.querySelectorAll('.js-preco').forEach(p=>p.innerHTML = (C.precoDe?`<s>de R$ ${C.precoDe}</s>`:'') + `R$ ${C.preco}`);
+  document.querySelectorAll('.js-preco-num').forEach(p=>p.textContent=C.preco);
   if(C.pedirEmail) $('#blocoEmail').style.display='block';
   document.querySelectorAll('.cta').forEach(a=>a.href = linkCheckout());
 
   ir('res');
   track('RaloRevelado',{ano_pessoal:st.ap,ralo:r.nome});
+  track('ViewContent',{content_name:'calendario_cofre_2027',value:C.valorPixel,currency:'BRL'},true);
 }
 
 /* ---------- checkout ---------- */
